@@ -3,60 +3,66 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Top-Reviewed Family Trips</title>
+  <title>Top Trips & Age‑Tailored 5‑Day Itineraries</title>
   <style>
     *{box-sizing:border-box;margin:0;padding:0}
-    body{font-family:Arial,Helvetica,sans-serif;background:#111;color:#fff;line-height:1.5}
-    h1{text-align:center;padding:24px 8px;letter-spacing:.5px;font-size:clamp(1.5rem,4vw,2.5rem)}
-    .slideshow-container{position:relative;max-width:1000px;margin:0 auto;border-radius:20px;overflow:hidden;box-shadow:0 10px 25px rgba(0,0,0,.45)}
+    body{font-family:Arial,Helvetica,sans-serif;background:#111;color:#fff;line-height:1.6}
+    h1{text-align:center;padding:24px;font-size:clamp(1.6rem,4vw,2.6rem)}
+    a{color:#4fc3f7;text-decoration:none}
+    a:hover{text-decoration:underline}
+
+    /* slideshow */
+    .slideshow-container{position:relative;max-width:1000px;margin:0 auto 48px;border-radius:20px;overflow:hidden;box-shadow:0 10px 25px rgba(0,0,0,.45)}
     .slide{display:none;position:relative}
     .slide img{width:100%;height:520px;object-fit:cover}
-    .slide-content{position:absolute;bottom:0;left:0;width:100%;background:rgba(0,0,0,.6);padding:24px 20px}
-    .slide-content h2{font-size:1.75rem;margin-bottom:8px}
-    .slide-content p{margin:4px 0;font-size:.95rem}
-    .nav-btn{cursor:pointer;position:absolute;top:50%;transform:translateY(-50%);padding:16px;color:#fff;font-weight:bold;font-size:24px;border-radius:4px;background:rgba(0,0,0,.4);user-select:none;transition:background .2s}
+    .slide-content{position:absolute;bottom:0;left:0;width:100%;background:rgba(0,0,0,.62);padding:22px}
+    .slide-content h2{font-size:1.6rem;margin-bottom:6px}
+    .nav-btn{cursor:pointer;position:absolute;top:50%;transform:translateY(-50%);padding:16px;font-size:24px;font-weight:bold;color:#fff;background:rgba(0,0,0,.45);border-radius:6px}
     .nav-btn:hover{background:rgba(0,0,0,.8)}
-    .prev{left:10px}
-    .next{right:10px}
-    .dot-container{text-align:center;padding:18px 0;background:#222}
-    .dot{cursor:pointer;height:14px;width:14px;margin:0 4px;background:#bbb;border-radius:50%;display:inline-block;transition:background-color .4s}
+    .prev{left:12px}.next{right:12px}
+    .dot-container{text-align:center;padding:16px 0;background:#222}
+    .dot{height:14px;width:14px;margin:0 4px;border-radius:50%;background:#bbb;display:inline-block;cursor:pointer}
     .active,.dot:hover{background:#717171}
-    @keyframes fade{from{opacity:.4}to{opacity:1}}
-    .fade{animation-name:fade;animation-duration:1s}
-    @media(max-width:650px){.slide img{height:340px}.slide-content h2{font-size:1.4rem}}
+
+    /* itinerary cards */
+    section.itin{max-width:1000px;margin:0 auto 56px;padding:28px 24px;background:#222;border-radius:16px;box-shadow:0 4px 16px rgba(0,0,0,.4)}
+    section.itin h2{text-align:center;color:#4fc3f7;margin-bottom:18px;font-size:1.7rem}
+    section.itin h3{margin:18px 0 8px;font-size:1.25rem;color:#fbbf24}
+    ol{margin-left:18px}
+    li{margin-bottom:6px}
+    @media(max-width:650px){.slide img{height:340px}.slide-content h2{font-size:1.3rem}}
   </style>
 </head>
 <body>
-  <h1>Top-Reviewed Adventure Picks</h1>
+  <h1>Family‑Approved Trips & Click‑to‑Plan Schedules</h1>
+
+  <!-- ===== Slideshow ===== -->
   <div class="slideshow-container">
-    <!-- Slide 1: Clearwater Beach -->
+    <!-- Clearwater -->
     <div class="slide fade">
       <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1600&q=80" alt="Clearwater Beach sunset" />
       <div class="slide-content">
         <h2>Clearwater Beach, Florida</h2>
-        <p><strong>Review love –</strong> #1 Tripadvisor US Beach (4.8★, 18k votes)</p>
-        <p><strong>5-night budget (Jun 13-18):</strong> $3,187 total – Flights $324, Edge Hotel $1,200, ground $166, activities $297, food $1,200.</p>
-        <p>Don’t miss Pier 60 sunsets, Clearwater Marine Aquarium, and a dolphin-watch cruise.</p>
+        <p>#1 Tripadvisor US Beach · 5‑night budget ≈ $3,187</p>
+        <p><a href="#cw-age">Skip to Clearwater 5‑Day Plan ↗</a></p>
       </div>
     </div>
-    <!-- Slide 2: Outer Banks -->
+    <!-- Outer Banks -->
     <div class="slide fade">
-      <img src="https://images.unsplash.com/photo-1523731407965-2430cd12f5e4?auto=format&fit=crop&w=1600&q=80" alt="Cape Hatteras Lighthouse" />
+      <img src="https://images.unsplash.com/photo-1590495131278-04b87b8dd4b4?auto=format&fit=crop&w=1600&q=80" alt="Outer Banks lighthouse" />
       <div class="slide-content">
         <h2>Outer Banks, North Carolina</h2>
-        <p><strong>Review love –</strong> 4.7★ average across 5 pristine OBX beaches</p>
-        <p><strong>5-night budget:</strong> ≈ $2,400 – Fuel $88, rental house $1,050, food $1,000, tours $250.</p>
-        <p>Highlights: Cape Hatteras Lighthouse, Ocracoke ferry, wild-horse 4×4 tour.</p>
+        <p>Wild beaches & lighthouses · 5‑night budget ≈ $2,400</p>
+        <p><a href="#obx-age">Skip to OBX 5‑Day Plan ↗</a></p>
       </div>
     </div>
-    <!-- Slide 3: Great Smoky Mountains -->
+    <!-- Smokies -->
     <div class="slide fade">
-      <img src="https://images.unsplash.com/photo-1503264116251-35a269479413?auto=format&fit=crop&w=1600&q=80" alt="Great Smoky Mountains scenic layers" />
+      <img src="https://images.unsplash.com/photo-1503264116251-35a269479413?auto=format&fit=crop&w=1600&q=80" alt="Great Smoky Mountains layers" />
       <div class="slide-content">
         <h2>Great Smoky Mountains, Tennessee</h2>
-        <p><strong>Review love –</strong> 4.8★ traveler rating, America’s most-visited national park</p>
-        <p><strong>5-night budget:</strong> ≈ $2,260 – Fuel $142, cabin/hotel $600, food $1,320, Dollywood $200.</p>
-        <p>Must-dos: Clingmans Dome sunrise, Laurel Falls hike, Gatlinburg SkyBridge.</p>
+        <p>America’s most visited NP · 5‑night budget ≈ $2,260</p>
+        <p><a href="#gsm-age">Skip to Smokies 5‑Day Plan ↗</a></p>
       </div>
     </div>
     <span class="nav-btn prev" onclick="plusSlides(-1)">&#10094;</span>
@@ -67,8 +73,108 @@
     <span class="dot" onclick="currentSlide(2)"></span>
     <span class="dot" onclick="currentSlide(3)"></span>
   </div>
+
+  <!-- ===== Clearwater Itinerary ===== -->
+  <section id="cw-age" class="itin">
+    <h2>Clearwater Beach – 5‑Day Itinerary with Live Links</h2>
+
+    <h3>Age 6</h3>
+    <ol>
+      <li>Morning play at <a href="https://www.myclearwater.com/Residents/Things-to-Do/Parks/South-Beach" target="_blank">South Beach Playground</a> ➜ Dinner at <a href="https://frenchysonline.com/locations/rockaway-grill/" target="_blank">Frenchy’s Rockaway Grill</a> ➜ <a href="https://www.sunsetsatpier60.com/" target="_blank">Pier 60 Sunset Festival</a>.</li>
+      <li>Hands‑on fun at the <a href="https://www.cmaquarium.org/" target="_blank">Clearwater Marine Aquarium</a> ➜ Pirate cruise on <a href="https://captainmemo.com/" target="_blank">Captain Memo’s Pirate Ship</a> ➜ Ice cream on Mandalay Ave.</li>
+      <li>Ferry to <a href="https://caladesiferry.org/" target="_blank">Caladesi Island State Park</a> ➜ Picnic lunch ➜ Hotel pool time.</li>
+      <li><a href="https://greatex.org/" target="_blank">Great Explorations Children’s Museum</a> in St. Pete ➜ Afternoon <a href="https://seascreamer.com/" target="_blank">Sea Screamer Dolphin Cruise</a>.</li>
+      <li>Tide‑pooling at <a href="https://pinellas.gov/sand-key-park/" target="_blank">Sand Key Park</a> ➜ Souvenir stop ➜ Depart.</li>
+    </ol>
+
+    <h3>Age 12</h3>
+    <ol>
+      <li>Paddle‑board intro with <a href="https://www.clearwatersup.com/" target="_blank">Clearwater SUP Co.</a> ➜ Outdoor movie at Pier 60.</li>
+      <li>Behind‑the‑scenes tour at CMA ➜ Bike rental on <a href="https://rideclearwater.com/" target="_blank">Memorial Causeway Trail</a>.</li>
+      <li>Mangrove kayak guided by <a href="https://www.tampabaykayaktours.com/" target="_blank">Tampa Bay Kayak Tours</a> ➜ Lunch in <a href="https://www.dunedingov.com/" target="_blank">Dunedin</a> ➜ Evening <a href="https://www.milb.com/clearwater" target="_blank">Threshers Baseball</a> game.</li>
+      <li>Art day at <a href="https://thedali.org/" target="_blank">The Dalí Museum</a> & St. Pete murals ➜ <a href="https://littledolphintours.com/" target="_blank">Little Toot Dolphin Tour</a>.</li>
+      <li>Morning <a href="https://clearwaterparasail.com/" target="_blank">parasailing</a> session ➜ Pack & depart.</li>
+    </ol>
+
+    <h3>Age 14</h3>
+    <ol>
+      <li>Jet‑ski adventure with <a href="https://h2owatersportz.com/" target="_blank">H2O Watersports</a> ➜ Fishing clinic on <a href="https://www.pier60fishing.com/" target="_blank">Pier 60</a>.</li>
+      <li>Teen volunteer shift at CMA ➜ Beach volleyball at <a href="https://www.clearwaterbeachvolleyball.com/" target="_blank">CB Volleyball Courts</a>.</li>
+      <li>Cycling the <a href="https://pinellascounty.org/trailgd/" target="_blank">Pinellas Trail</a> ➜ Sunset photo workshop.</li>
+      <li>Thrill‑day at <a href="https://buschgardens.com/tampa/" target="_blank">Busch Gardens Tampa</a>.</li>
+      <li>Surf lesson via <a href="https://clearwatersurfschool.com/" target="_blank">Clearwater Surf School</a> ➜ Depart.</li>
+    </ol>
+  </section>
+
+  <!-- ===== Outer Banks Itinerary ===== -->
+  <section id="obx-age" class="itin">
+    <h2>Outer Banks – 5‑Day Itinerary with Links</h2>
+
+    <h3>Age 6</h3>
+    <ol>
+      <li>Kite‑flying at <a href="https://www.ncparks.gov/jockeys-ridge-state-park/home" target="_blank">Jockey’s Ridge State Park</a> ➜ Dinner at <a href="https://samandomies.net/" target="_blank">Sam & Omie’s</a>.</li>
+      <li>Visit <a href="https://www.nps.gov/caha/planyourvisit/ocracokeponies.htm" target="_blank">Ocracoke Pony Pens</a> ➜ Shell painting in village.</li>
+      <li><a href="https://www.ncaquariums.com/roanoke-island" target="_blank">Roanoke Island Aquarium</a> touch pools ➜ <a href="https://www.townofmanteo.com/" target="_blank">Manteo</a> splash pad.</li>
+      <li>Mini‑golf at <a href="https://mutinybayobx.com/" target="_blank">Mutiny Bay</a> ➜ Sandcastle contest.</li>
+      <li>Hang‑glide demo with <a href="https://www.kittyhawk.com/" target="_blank">Kitty Hawk Kites</a> ➜ Depart.</li>
+    </ol>
+
+    <h3>Age 12</h3>
+    <ol>
+      <li>Climb <a href="https://www.outerbanks.org/listing/bodie-island-lighthouse/929/" target="_blank">Bodie Island Lighthouse</a> ➜ Jr. Ranger at NPS center.</li>
+      <li>Wild‑horse tour with <a href="https://www.corollawildhorsetours.com/" target="_blank">Corolla Wild Horse Tours</a> ➜ Beach picnic.</li>
+      <li>Surf lesson with <a href="https://obxsurfschool.com/" target="_blank">OBX Surf School</a> ➜ <a href="https://www.obxghosttours.com/" target="_blank">Ghost tour Manteo</a>.</li>
+      <li>Kayak <a href="https://www.fws.gov/refuge/alligator-river" target="_blank">Alligator River NWR</a> ➜ Evening SUP.</li>
+      <li><a href="https://www.nps.gov/wrbr/index.htm" target="_blank">Wright Brothers Memorial</a> interactive lab ➜ Depart.</li>
+    </ol>
+
+    <h3>Age 14</h3>
+    <ol>
+      <li>Beginner hang‑gliding lesson via <a href="https://www.kittyhawk.com/adventures/hang-gliding/" target="_blank">Kitty Hawk Kites</a>.</li>
+      <li>Deep‑sea charter with <a href="https://www.oregon-inlet.com/" target="_blank">Oregon Inlet Fishing Center</a>.</li>
+      <li>Dune buggy rental <a href="https://www.obxbuggies.com/" target="_blank">OBX Buggies</a> ➜ Sunset photos.</li>
+      <li>Kitesurf lesson at <a href="https://outerbankskiteboarding.com/" target="_blank">Canadian Hole</a>.</li>
+      <li>Shipwreck snorkel tour with <a href="https://obxdivers.com/" target="_blank">OBX Diving</a> ➜ Depart.</li>
+    </ol>
+  </section>
+
+  <!-- ===== Smokies Itinerary ===== -->
+  <section id="gsm-age" class="itin">
+    <h2>Great Smoky Mountains – 5‑Day Itinerary with Links</h2>
+
+    <h3>Age 6</h3>
+    <ol>
+      <li><a href="https://www.nps.gov/grsm/planyourvisit/laurel-falls.htm" target="_blank">Laurel Falls</a> walk ➜ Jr. Ranger kit.</li>
+      <li><a href="https://www.nps.gov/grsm/planyourvisit/roaring-fork.htm" target="_blank">Roaring Fork Motor Trail</a> ➜ Picnic at <a href="https://www.nps.gov/grsm/planyourvisit/picnic.htm" target="_blank">Chimneys</a>.</li>
+      <li><a href="https://www.ripleyaquariums.com/gatlinburg/" target="_blank">Ripley’s Aquarium of the Smokies</a>.</li>
+      <li>Ride & shows at <a href="https://www.dollywood.com/" target="_blank">Dollywood</a>.</li>
+      <li><a href="https://www.gatlinburgskypark.com/" target="_blank">Gatlinburg SkyPark</a> playground ➜ Depart.</li>
+    </ol>
+
+    <h3>Age 12</h3>
+    <ol>
+      <li>Bike <a href="https://www.nps.gov/grsm/planyourvisit/cadescove.htm" target="_blank">Cades Cove</a> loop (car‑free morning).</li>
+      <li><a href="https://www.nps.gov/grsm/planyourvisit/alum-cave.htm" target="_blank">Alum Cave Bluffs</a> hike.</li>
+      <li>Zipline at <a href="https://www.climbworks.com/gatlinburg/" target="_blank">CLIMB Works</a>.</li>
+      <li>Tree‑top fun at <a href="https://anakeesta.com/" target="_blank">Anakeesta</a>.</li>
+      <li>Horseback ride <a href="https://smokemontridingstables.com/" target="_blank">Smokemont Stables</a> ➜ Depart.</li>
+    </ol>
+
+    <h3>Age 14</h3>
+    <ol>
+      <li>Raft Upper Pigeon River with <a href="https://noc.com/trips/whitewater-rafting/fully-guided-pigeon-river/" target="_blank">Nantahala Outdoor Center</a>.</li>
+      <li>Sunrise hike Mount LeConte via Alum Cave.</li>
+      <li>Mountain bike <a href="https://visitcherokeenc.com/play/fire-mountain-trails/" target="_blank">Fire Mountain Trails</a>.</li>
+      <li><a href="https://www.gatlinburghaunts.com/" target="_blank">Gatlinburg Night Ghost Tour</a>.</li>
+      <li><a href="https://www.nps.gov/grsm/planyourvisit/grotto-falls.htm" target="_blank">Grotto Falls</a> canyoning shoot ➜ Depart.</li>
+    </ol>
+  </section>
+
   <script>
-    let slideIndex=1;const slides=document.getElementsByClassName('slide');const dots=document.getElementsByClassName('dot');function showSlides(n){if(n>slides.length)slideIndex=1;if(n<1)slideIndex=slides.length;for(let i=0;i<slides.length;i++){slides[i].style.display='none'}for(let i=0;i<dots.length;i++){dots[i].classList.remove('active')}slides[slideIndex-1].style.display='block';dots[slideIndex-1].classList.add('active')}function plusSlides(n){showSlides(slideIndex+=n)}function currentSlide(n){showSlides(slideIndex=n)}showSlides(slideIndex);setInterval(()=>plusSlides(1),8000);
+    let slideIndex=1;const slides=document.getElementsByClassName('slide'),dots=document.getElementsByClassName('dot');
+    function showSlides(n){if(n>slides.length)slideIndex=1;if(n<1)slideIndex=slides.length;for(let i=0;i<slides.length;i++){slides[i].style.display='none'}for(let i=0;i<dots.length;i++){dots[i].classList.remove('active')}slides[slideIndex-1].style.display='block';dots[slideIndex-1].classList.add('active')}
+    function plusSlides(n){showSlides(slideIndex+=n)}function currentSlide(n){showSlides(slideIndex=n)}
+    showSlides(slideIndex);setInterval(()=>plusSlides(1),8000);
   </script>
 </body>
 </html>
