@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Top-Reviewed Family Trips</title>
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:Arial,Helvetica,sans-serif;background:#111;color:#fff;line-height:1.5}
+    h1{text-align:center;padding:24px 8px;letter-spacing:.5px;font-size:clamp(1.5rem,4vw,2.5rem)}
+    .slideshow-container{position:relative;max-width:1000px;margin:0 auto;border-radius:20px;overflow:hidden;box-shadow:0 10px 25px rgba(0,0,0,.45)}
+    .slide{display:none;position:relative}
+    .slide img{width:100%;height:520px;object-fit:cover}
+    .slide-content{position:absolute;bottom:0;left:0;width:100%;background:rgba(0,0,0,.6);padding:24px 20px}
+    .slide-content h2{font-size:1.75rem;margin-bottom:8px}
+    .slide-content p{margin:4px 0;font-size:.95rem}
+    .nav-btn{cursor:pointer;position:absolute;top:50%;transform:translateY(-50%);padding:16px;color:#fff;font-weight:bold;font-size:24px;border-radius:4px;background:rgba(0,0,0,.4);user-select:none;transition:background .2s}
+    .nav-btn:hover{background:rgba(0,0,0,.8)}
+    .prev{left:10px}
+    .next{right:10px}
+    .dot-container{text-align:center;padding:18px 0;background:#222}
+    .dot{cursor:pointer;height:14px;width:14px;margin:0 4px;background:#bbb;border-radius:50%;display:inline-block;transition:background-color .4s}
+    .active,.dot:hover{background:#717171}
+    @keyframes fade{from{opacity:.4}to{opacity:1}}
+    .fade{animation-name:fade;animation-duration:1s}
+    @media(max-width:650px){.slide img{height:340px}.slide-content h2{font-size:1.4rem}}
+  </style>
+</head>
+<body>
+  <h1>Top-Reviewed Adventure Picks</h1>
+  <div class="slideshow-container">
+    <!-- Slide 1: Clearwater Beach -->
+    <div class="slide fade">
+      <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1600&q=80" alt="Clearwater Beach sunset" />
+      <div class="slide-content">
+        <h2>Clearwater Beach, Florida</h2>
+        <p><strong>Review love –</strong> #1 Tripadvisor US Beach (4.8★, 18k votes)</p>
+        <p><strong>5-night budget (Jun 13-18):</strong> $3,187 total – Flights $324, Edge Hotel $1,200, ground $166, activities $297, food $1,200.</p>
+        <p>Don’t miss Pier 60 sunsets, Clearwater Marine Aquarium, and a dolphin-watch cruise.</p>
+      </div>
+    </div>
+    <!-- Slide 2: Outer Banks -->
+    <div class="slide fade">
+      <img src="https://images.unsplash.com/photo-1523731407965-2430cd12f5e4?auto=format&fit=crop&w=1600&q=80" alt="Cape Hatteras Lighthouse" />
+      <div class="slide-content">
+        <h2>Outer Banks, North Carolina</h2>
+        <p><strong>Review love –</strong> 4.7★ average across 5 pristine OBX beaches</p>
+        <p><strong>5-night budget:</strong> ≈ $2,400 – Fuel $88, rental house $1,050, food $1,000, tours $250.</p>
+        <p>Highlights: Cape Hatteras Lighthouse, Ocracoke ferry, wild-horse 4×4 tour.</p>
+      </div>
+    </div>
+    <!-- Slide 3: Great Smoky Mountains -->
+    <div class="slide fade">
+      <img src="https://images.unsplash.com/photo-1503264116251-35a269479413?auto=format&fit=crop&w=1600&q=80" alt="Great Smoky Mountains scenic layers" />
+      <div class="slide-content">
+        <h2>Great Smoky Mountains, Tennessee</h2>
+        <p><strong>Review love –</strong> 4.8★ traveler rating, America’s most-visited national park</p>
+        <p><strong>5-night budget:</strong> ≈ $2,260 – Fuel $142, cabin/hotel $600, food $1,320, Dollywood $200.</p>
+        <p>Must-dos: Clingmans Dome sunrise, Laurel Falls hike, Gatlinburg SkyBridge.</p>
+      </div>
+    </div>
+    <span class="nav-btn prev" onclick="plusSlides(-1)">&#10094;</span>
+    <span class="nav-btn next" onclick="plusSlides(1)">&#10095;</span>
+  </div>
+  <div class="dot-container">
+    <span class="dot" onclick="currentSlide(1)"></span>
+    <span class="dot" onclick="currentSlide(2)"></span>
+    <span class="dot" onclick="currentSlide(3)"></span>
+  </div>
+  <script>
+    let slideIndex=1;const slides=document.getElementsByClassName('slide');const dots=document.getElementsByClassName('dot');function showSlides(n){if(n>slides.length)slideIndex=1;if(n<1)slideIndex=slides.length;for(let i=0;i<slides.length;i++){slides[i].style.display='none'}for(let i=0;i<dots.length;i++){dots[i].classList.remove('active')}slides[slideIndex-1].style.display='block';dots[slideIndex-1].classList.add('active')}function plusSlides(n){showSlides(slideIndex+=n)}function currentSlide(n){showSlides(slideIndex=n)}showSlides(slideIndex);setInterval(()=>plusSlides(1),8000);
+  </script>
+</body>
+</html>
