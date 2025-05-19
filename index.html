@@ -224,7 +224,14 @@
         <input type="text" id="otherUrl" placeholder="Paste another voter's link">
         <button onclick="mergeVotes()">Add Their Votes</button>
       </div>
+      <!-- Hidden hint for admin -->
+      <div style="font-size:8px;color:#999;margin-top:5px;text-align:right">
+        <!-- This spells CSR upside down when rotated -->
+        <span style="display:inline-block;transform:rotate(180deg)">ɹsɔ</span>
+      </div>
     </div>
+    <!-- Admin Reset (hidden by default) -->
+    <button id="resetBtn" onclick="resetAllVotes()" style="display:none;margin-top:10px;background:#dc3545;color:white">Reset All Votes</button>
   </div>
 </div>
 
@@ -377,6 +384,29 @@ window.addEventListener('load',()=>{
     loadVotesFromURL();
   }
 });
+
+// Reset function
+function resetAllVotes(){
+  if(confirm('Are you sure you want to reset all votes?')){
+    localStorage.removeItem('tripVotes');
+    window.location.hash='';
+    location.reload();
+  }
+}
+
+// Admin keyboard shortcut (Ctrl+Shift+R)
+document.addEventListener('keydown',(e)=>{
+  if(e.ctrlKey && e.shiftKey && e.key==='R'){
+    e.preventDefault();
+    document.getElementById('resetBtn').style.display='block';
+  }
+});
 </script>
+
+<!-- Admin hint at bottom of page -->
+<div style="position:fixed;bottom:5px;right:5px;font-size:10px;color:#444;opacity:0.3">
+  🔄 C+S+R
+</div>
+
 </body>
 </html>
