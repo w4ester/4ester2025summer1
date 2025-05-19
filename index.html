@@ -3,178 +3,267 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Top Trips & Age‑Tailored 5‑Day Itineraries</title>
+  <title>Top Family Trips – Vote & Plan</title>
+
+  <!-- ===========  STYLES  =========== -->
   <style>
+    /* --- Base --- */
     *{box-sizing:border-box;margin:0;padding:0}
     body{font-family:Arial,Helvetica,sans-serif;background:#111;color:#fff;line-height:1.6}
     h1{text-align:center;padding:24px;font-size:clamp(1.6rem,4vw,2.6rem)}
     a{color:#4fc3f7;text-decoration:none}
     a:hover{text-decoration:underline}
 
-    /* slideshow */
-    .slideshow-container{position:relative;max-width:1000px;margin:0 auto 48px;border-radius:20px;overflow:hidden;box-shadow:0 10px 25px rgba(0,0,0,.45)}
+    /* --- Slideshow --- */
+    .slideshow-container{position:relative;max-width:1000px;margin:0 auto 48px;
+                          border-radius:20px;overflow:hidden;
+                          box-shadow:0 10px 25px rgba(0,0,0,.45)}
     .slide{display:none;position:relative}
     .slide img{width:100%;height:520px;object-fit:cover}
-    .slide-content{position:absolute;bottom:0;left:0;width:100%;background:rgba(0,0,0,.62);padding:22px}
+    .slide-content{position:absolute;bottom:0;left:0;width:100%;
+                   background:rgba(0,0,0,.62);padding:22px}
     .slide-content h2{font-size:1.6rem;margin-bottom:6px}
-    .nav-btn{cursor:pointer;position:absolute;top:50%;transform:translateY(-50%);padding:16px;font-size:24px;font-weight:bold;color:#fff;background:rgba(0,0,0,.45);border-radius:6px}
+    .nav-btn{cursor:pointer;position:absolute;top:50%;transform:translateY(-50%);
+             padding:16px;font-size:24px;font-weight:bold;color:#fff;
+             background:rgba(0,0,0,.45);border-radius:6px}
     .nav-btn:hover{background:rgba(0,0,0,.8)}
     .prev{left:12px}.next{right:12px}
     .dot-container{text-align:center;padding:16px 0;background:#222}
-    .dot{height:14px;width:14px;margin:0 4px;border-radius:50%;background:#bbb;display:inline-block;cursor:pointer}
+    .dot{height:14px;width:14px;margin:0 4px;border-radius:50%;background:#bbb;
+         display:inline-block;cursor:pointer}
     .active,.dot:hover{background:#717171}
+    @keyframes fade{from{opacity:.4}to{opacity:1}}
+    .fade{animation:fade 1s}
+    @media(max-width:650px){
+      .slide img{height:340px}
+      .slide-content h2{font-size:1.4rem}
+    }
 
-    /* itinerary cards */
-    section.itin{max-width:1000px;margin:0 auto 56px;padding:28px 24px;background:#222;border-radius:16px;box-shadow:0 4px 16px rgba(0,0,0,.4)}
-    section.itin h2{text-align:center;color:#4fc3f7;margin-bottom:18px;font-size:1.7rem}
-    section.itin h3{margin:18px 0 8px;font-size:1.25rem;color:#fbbf24}
-    ol{margin-left:18px}
+    /* --- Itineraries --- */
+    section.itin{max-width:1000px;margin:0 auto 60px;padding:30px 24px;
+                 background:#222;border-radius:16px;
+                 box-shadow:0 4px 16px rgba(0,0,0,.4)}
+    section.itin h2{text-align:center;color:#4fc3f7;font-size:1.75rem;margin-bottom:18px}
+    section.itin h3{margin:18px 0 10px;font-size:1.3rem;color:#fbbf24}
+    ol{margin-left:20px}
     li{margin-bottom:6px}
-    @media(max-width:650px){.slide img{height:340px}.slide-content h2{font-size:1.3rem}}
+
+    /* --- Poll overlay --- */
+    .poll{display:none;position:fixed;top:0;left:0;width:100%;height:100%;
+          background:rgba(0,0,0,.95);padding:32px 20px;overflow:auto;z-index:1000}
+    .poll.active{display:block}
+    .poll h2{text-align:center;margin-bottom:18px;font-size:1.8rem;color:#4fc3f7}
+    .poll form{max-width:500px;margin:0 auto;font-size:1.1rem}
+    .poll label{display:block;margin-bottom:10px}
+    .poll button{margin-top:16px;padding:10px 18px;border:none;border-radius:6px;
+                 background:#4fc3f7;color:#000;font-weight:bold;cursor:pointer}
+    .poll button:hover{background:#38bdf8}
+    #resultList li{margin-bottom:6px}
   </style>
 </head>
 <body>
-  <h1>Family‑Approved Trips & Click‑to‑Plan Schedules</h1>
 
-  <!-- ===== Slideshow ===== -->
-  <div class="slideshow-container">
-    <!-- Clearwater -->
-    <div class="slide fade">
-      <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1600&q=80" alt="Clearwater Beach sunset" />
-      <div class="slide-content">
-        <h2>Clearwater Beach, Florida</h2>
-        <p>#1 Tripadvisor US Beach · 5‑night budget ≈ $3,187</p>
-        <p><a href="#cw-age">Skip to Clearwater 5‑Day Plan ↗</a></p>
-      </div>
+<h1>Family-Approved Trips &nbsp;|&nbsp; Click-to-Plan Schedules</h1>
+<p style="text-align:center;margin-bottom:16px">
+  <a href="#" onclick="openPoll();return false;">📊 Cast Your Vote for the Best Trip</a>
+</p>
+
+<!-- ===========  SLIDESHOW  =========== -->
+<div class="slideshow-container">
+  <div class="slide fade">
+    <img src="clearwater.jpg" alt="Clearwater Beach" />
+    <div class="slide-content">
+      <h2>Clearwater Beach, Florida</h2>
+      <p>#1 Tripadvisor US Beach  ·  5-night ≈ $3,187</p>
+      <p><a href="#cw">Jump to Itinerary ↗</a></p>
     </div>
-    <!-- Outer Banks -->
-    <div class="slide fade">
-      <img src="https://images.unsplash.com/photo-1590495131278-04b87b8dd4b4?auto=format&fit=crop&w=1600&q=80" alt="Outer Banks lighthouse" />
-      <div class="slide-content">
-        <h2>Outer Banks, North Carolina</h2>
-        <p>Wild beaches & lighthouses · 5‑night budget ≈ $2,400</p>
-        <p><a href="#obx-age">Skip to OBX 5‑Day Plan ↗</a></p>
-      </div>
-    </div>
-    <!-- Smokies -->
-    <div class="slide fade">
-      <img src="https://images.unsplash.com/photo-1503264116251-35a269479413?auto=format&fit=crop&w=1600&q=80" alt="Great Smoky Mountains layers" />
-      <div class="slide-content">
-        <h2>Great Smoky Mountains, Tennessee</h2>
-        <p>America’s most visited NP · 5‑night budget ≈ $2,260</p>
-        <p><a href="#gsm-age">Skip to Smokies 5‑Day Plan ↗</a></p>
-      </div>
-    </div>
-    <span class="nav-btn prev" onclick="plusSlides(-1)">&#10094;</span>
-    <span class="nav-btn next" onclick="plusSlides(1)">&#10095;</span>
-  </div>
-  <div class="dot-container">
-    <span class="dot" onclick="currentSlide(1)"></span>
-    <span class="dot" onclick="currentSlide(2)"></span>
-    <span class="dot" onclick="currentSlide(3)"></span>
   </div>
 
-  <!-- ===== Clearwater Itinerary ===== -->
-  <section id="cw-age" class="itin">
-    <h2>Clearwater Beach – 5‑Day Itinerary with Live Links</h2>
+  <div class="slide fade">
+    <img src="outerbanks.jpg" alt="Outer Banks dunes" />
+    <div class="slide-content">
+      <h2>Outer Banks, North Carolina</h2>
+      <p>Wild beaches &amp; lighthouses  ·  5-night ≈ $2,400</p>
+      <p><a href="#obx">Jump to Itinerary ↗</a></p>
+    </div>
+  </div>
 
-    <h3>Age 6</h3>
-    <ol>
-      <li>Morning play at <a href="https://www.myclearwater.com/Residents/Things-to-Do/Parks/South-Beach" target="_blank">South Beach Playground</a> ➜ Dinner at <a href="https://frenchysonline.com/locations/rockaway-grill/" target="_blank">Frenchy’s Rockaway Grill</a> ➜ <a href="https://www.sunsetsatpier60.com/" target="_blank">Pier 60 Sunset Festival</a>.</li>
-      <li>Hands‑on fun at the <a href="https://www.cmaquarium.org/" target="_blank">Clearwater Marine Aquarium</a> ➜ Pirate cruise on <a href="https://captainmemo.com/" target="_blank">Captain Memo’s Pirate Ship</a> ➜ Ice cream on Mandalay Ave.</li>
-      <li>Ferry to <a href="https://caladesiferry.org/" target="_blank">Caladesi Island State Park</a> ➜ Picnic lunch ➜ Hotel pool time.</li>
-      <li><a href="https://greatex.org/" target="_blank">Great Explorations Children’s Museum</a> in St. Pete ➜ Afternoon <a href="https://seascreamer.com/" target="_blank">Sea Screamer Dolphin Cruise</a>.</li>
-      <li>Tide‑pooling at <a href="https://pinellas.gov/sand-key-park/" target="_blank">Sand Key Park</a> ➜ Souvenir stop ➜ Depart.</li>
-    </ol>
+  <div class="slide fade">
+    <img src="smokies.jpg" alt="Great Smoky Mountains" />
+    <div class="slide-content">
+      <h2>Great Smoky Mountains, Tennessee</h2>
+      <p>America’s most-visited NP  ·  5-night ≈ $2,260</p>
+      <p><a href="#gsm">Jump to Itinerary ↗</a></p>
+    </div>
+  </div>
 
-    <h3>Age 12</h3>
-    <ol>
-      <li>Paddle‑board intro with <a href="https://www.clearwatersup.com/" target="_blank">Clearwater SUP Co.</a> ➜ Outdoor movie at Pier 60.</li>
-      <li>Behind‑the‑scenes tour at CMA ➜ Bike rental on <a href="https://rideclearwater.com/" target="_blank">Memorial Causeway Trail</a>.</li>
-      <li>Mangrove kayak guided by <a href="https://www.tampabaykayaktours.com/" target="_blank">Tampa Bay Kayak Tours</a> ➜ Lunch in <a href="https://www.dunedingov.com/" target="_blank">Dunedin</a> ➜ Evening <a href="https://www.milb.com/clearwater" target="_blank">Threshers Baseball</a> game.</li>
-      <li>Art day at <a href="https://thedali.org/" target="_blank">The Dalí Museum</a> & St. Pete murals ➜ <a href="https://littledolphintours.com/" target="_blank">Little Toot Dolphin Tour</a>.</li>
-      <li>Morning <a href="https://clearwaterparasail.com/" target="_blank">parasailing</a> session ➜ Pack & depart.</li>
-    </ol>
+  <span class="nav-btn prev" onclick="plusSlides(-1)">&#10094;</span>
+  <span class="nav-btn next" onclick="plusSlides(1)">&#10095;</span>
+</div>
+<div class="dot-container">
+  <span class="dot" onclick="currentSlide(1)"></span>
+  <span class="dot" onclick="currentSlide(2)"></span>
+  <span class="dot" onclick="currentSlide(3)"></span>
+</div>
 
-    <h3>Age 14</h3>
-    <ol>
-      <li>Jet‑ski adventure with <a href="https://h2owatersportz.com/" target="_blank">H2O Watersports</a> ➜ Fishing clinic on <a href="https://www.pier60fishing.com/" target="_blank">Pier 60</a>.</li>
-      <li>Teen volunteer shift at CMA ➜ Beach volleyball at <a href="https://www.clearwaterbeachvolleyball.com/" target="_blank">CB Volleyball Courts</a>.</li>
-      <li>Cycling the <a href="https://pinellascounty.org/trailgd/" target="_blank">Pinellas Trail</a> ➜ Sunset photo workshop.</li>
-      <li>Thrill‑day at <a href="https://buschgardens.com/tampa/" target="_blank">Busch Gardens Tampa</a>.</li>
-      <li>Surf lesson via <a href="https://clearwatersurfschool.com/" target="_blank">Clearwater Surf School</a> ➜ Depart.</li>
-    </ol>
-  </section>
+<!-- ===========  CLEARWATER  =========== -->
+<section id="cw" class="itin">
+  <h2>Clearwater Beach — 5-Day Itinerary</h2>
 
-  <!-- ===== Outer Banks Itinerary ===== -->
-  <section id="obx-age" class="itin">
-    <h2>Outer Banks – 5‑Day Itinerary with Links</h2>
+  <h3>Age 7</h3>
+  <ol>
+    <li>South Beach Playground  ➜  <a href="https://frenchysonline.com/locations/rockaway-grill/" target="_blank">Frenchy’s Rockaway Grill</a>  ➜  <a href="https://www.sunsetsatpier60.com/" target="_blank">Pier 60 Sunset Festival</a></li>
+    <li><a href="https://www.cmaquarium.org/" target="_blank">Clearwater Marine Aquarium</a>  ➜  <a href="https://captainmemo.com/" target="_blank">Captain Memo Pirate Cruise</a></li>
+    <li>Ferry to <a href="https://caladesiferry.org/" target="_blank">Caladesi Island State Park</a> for shelling ➜ pool time</li>
+    <li><a href="https://greatex.org/" target="_blank">Great Explorations Museum</a>  ➜  <a href="https://seascreamer.com/" target="_blank">Sea Screamer Dolphin Cruise</a></li>
+    <li>Low-tide pools at <a href="https://pinellas.gov/sand-key-park/" target="_blank">Sand Key Park</a>  ➜  souvenir hunt</li>
+  </ol>
 
-    <h3>Age 6</h3>
-    <ol>
-      <li>Kite‑flying at <a href="https://www.ncparks.gov/jockeys-ridge-state-park/home" target="_blank">Jockey’s Ridge State Park</a> ➜ Dinner at <a href="https://samandomies.net/" target="_blank">Sam & Omie’s</a>.</li>
-      <li>Visit <a href="https://www.nps.gov/caha/planyourvisit/ocracokeponies.htm" target="_blank">Ocracoke Pony Pens</a> ➜ Shell painting in village.</li>
-      <li><a href="https://www.ncaquariums.com/roanoke-island" target="_blank">Roanoke Island Aquarium</a> touch pools ➜ <a href="https://www.townofmanteo.com/" target="_blank">Manteo</a> splash pad.</li>
-      <li>Mini‑golf at <a href="https://mutinybayobx.com/" target="_blank">Mutiny Bay</a> ➜ Sandcastle contest.</li>
-      <li>Hang‑glide demo with <a href="https://www.kittyhawk.com/" target="_blank">Kitty Hawk Kites</a> ➜ Depart.</li>
-    </ol>
+  <h3>Age 11</h3>
+  <ol>
+    <li>Paddle-board lesson (<a href="https://www.clearwatersup.com/" target="_blank">Clearwater SUP Co.</a>)</li>
+    <li>Behind-the-scenes tour at CMA ➜ Bike the <a href="https://rideclearwater.com/" target="_blank">Memorial Causeway Trail</a></li>
+    <li>Mangrove kayak (<a href="https://www.tampabaykayaktours.com/" target="_blank">TB Kayak Tours</a>) ➜ Evening <a href="https://www.milb.com/clearwater" target="_blank">Threshers Baseball</a></li>
+    <li>Art morning at <a href="https://thedali.org/" target="_blank">Dalí Museum</a> & murals ➜ <a href="https://littledolphintours.com/" target="_blank">Little Toot Dolphin Tour</a></li>
+    <li><a href="https://clearwaterparasail.com/" target="_blank">Parasailing Clearwater</a> ➜ depart</li>
+  </ol>
 
-    <h3>Age 12</h3>
-    <ol>
-      <li>Climb <a href="https://www.outerbanks.org/listing/bodie-island-lighthouse/929/" target="_blank">Bodie Island Lighthouse</a> ➜ Jr. Ranger at NPS center.</li>
-      <li>Wild‑horse tour with <a href="https://www.corollawildhorsetours.com/" target="_blank">Corolla Wild Horse Tours</a> ➜ Beach picnic.</li>
-      <li>Surf lesson with <a href="https://obxsurfschool.com/" target="_blank">OBX Surf School</a> ➜ <a href="https://www.obxghosttours.com/" target="_blank">Ghost tour Manteo</a>.</li>
-      <li>Kayak <a href="https://www.fws.gov/refuge/alligator-river" target="_blank">Alligator River NWR</a> ➜ Evening SUP.</li>
-      <li><a href="https://www.nps.gov/wrbr/index.htm" target="_blank">Wright Brothers Memorial</a> interactive lab ➜ Depart.</li>
-    </ol>
+  <h3>Age 14</h3>
+  <ol>
+    <li>Jet-ski island-hop (<a href="https://h2owatersportz.com/" target="_blank">H2O Watersports</a>) ➜ <a href="https://www.pier60fishing.com/" target="_blank">Pier 60 Fishing Clinic</a></li>
+    <li>Teen volunteer shift at CMA ➜ Beach volleyball (<a href="https://www.clearwaterbeachvolleyball.com/" target="_blank">CB Courts</a>)</li>
+    <li>Cycle the <a href="https://pinellascounty.org/trailgd/" target="_blank">Pinellas Trail</a> ➜ Sunset photo workshop</li>
+    <li>Thrill day at <a href="https://buschgardens.com/tampa/" target="_blank">Busch Gardens Tampa</a></li>
+    <li>Morning surf lesson (<a href="https://clearwatersurfschool.com/" target="_blank">Clearwater Surf School</a>) ➜ depart</li>
+  </ol>
+</section>
 
-    <h3>Age 14</h3>
-    <ol>
-      <li>Beginner hang‑gliding lesson via <a href="https://www.kittyhawk.com/adventures/hang-gliding/" target="_blank">Kitty Hawk Kites</a>.</li>
-      <li>Deep‑sea charter with <a href="https://www.oregon-inlet.com/" target="_blank">Oregon Inlet Fishing Center</a>.</li>
-      <li>Dune buggy rental <a href="https://www.obxbuggies.com/" target="_blank">OBX Buggies</a> ➜ Sunset photos.</li>
-      <li>Kitesurf lesson at <a href="https://outerbankskiteboarding.com/" target="_blank">Canadian Hole</a>.</li>
-      <li>Shipwreck snorkel tour with <a href="https://obxdivers.com/" target="_blank">OBX Diving</a> ➜ Depart.</li>
-    </ol>
-  </section>
+<!-- ===========  OUTER BANKS  =========== -->
+<section id="obx" class="itin">
+  <h2>Outer Banks — 5-Day Itinerary</h2>
 
-  <!-- ===== Smokies Itinerary ===== -->
-  <section id="gsm-age" class="itin">
-    <h2>Great Smoky Mountains – 5‑Day Itinerary with Links</h2>
+  <h3>Age 7</h3>
+  <ol>
+    <li>Fly kites on <a href="https://www.ncparks.gov/jockeys-ridge-state-park/home" target="_blank">Jockey’s Ridge</a> ➜ Dinner at <a href="https://samandomies.net/" target="_blank">Sam & Omie’s</a></li>
+    <li>Visit <a href="https://www.nps.gov/caha/planyourvisit/ocracokeponies.htm" target="_blank">Ocracoke Pony Pens</a> ➜ Shell-painting craft</li>
+    <li><a href="https://www.ncaquariums.com/roanoke-island" target="_blank">Roanoke Island Aquarium</a> ➜ Sound-side splash-pad in Manteo</li>
+    <li>Mini-golf at <a href="https://mutinybayobx.com/" target="_blank">Mutiny Bay</a> ➜ Sunset sand-castle contest</li>
+    <li>Hang-glide demo (<a href="https://www.kittyhawk.com/" target="_blank">Kitty Hawk Kites</a>) ➜ depart</li>
+  </ol>
 
-    <h3>Age 6</h3>
-    <ol>
-      <li><a href="https://www.nps.gov/grsm/planyourvisit/laurel-falls.htm" target="_blank">Laurel Falls</a> walk ➜ Jr. Ranger kit.</li>
-      <li><a href="https://www.nps.gov/grsm/planyourvisit/roaring-fork.htm" target="_blank">Roaring Fork Motor Trail</a> ➜ Picnic at <a href="https://www.nps.gov/grsm/planyourvisit/picnic.htm" target="_blank">Chimneys</a>.</li>
-      <li><a href="https://www.ripleyaquariums.com/gatlinburg/" target="_blank">Ripley’s Aquarium of the Smokies</a>.</li>
-      <li>Ride & shows at <a href="https://www.dollywood.com/" target="_blank">Dollywood</a>.</li>
-      <li><a href="https://www.gatlinburgskypark.com/" target="_blank">Gatlinburg SkyPark</a> playground ➜ Depart.</li>
-    </ol>
+  <h3>Age 11</h3>
+  <ol>
+    <li>Climb <a href="https://www.outerbanks.org/listing/bodie-island-lighthouse/929/" target="_blank">Bodie Island Lighthouse</a></li>
+    <li>Wild-horse 4×4 tour (<a href="https://www.corollawildhorsetours.com/" target="_blank">Corolla Tours</a>) ➜ Beach picnic</li>
+    <li>Surf lesson (<a href="https://obxsurfschool.com/" target="_blank">OBX Surf School</a>) ➜ <a href="https://www.obxghosttours.com/" target="_blank">Manteo Ghost Tour</a></li>
+    <li>Kayak the <a href="https://www.fws.gov/refuge/alligator-river" target="_blank">Alligator River NWR</a> ➜ Evening SUP rental</li>
+    <li><a href="https://www.nps.gov/wrbr/index.htm" target="_blank">Wright Brothers Memorial</a> interactive lab ➜ depart</li>
+  </ol>
 
-    <h3>Age 12</h3>
-    <ol>
-      <li>Bike <a href="https://www.nps.gov/grsm/planyourvisit/cadescove.htm" target="_blank">Cades Cove</a> loop (car‑free morning).</li>
-      <li><a href="https://www.nps.gov/grsm/planyourvisit/alum-cave.htm" target="_blank">Alum Cave Bluffs</a> hike.</li>
-      <li>Zipline at <a href="https://www.climbworks.com/gatlinburg/" target="_blank">CLIMB Works</a>.</li>
-      <li>Tree‑top fun at <a href="https://anakeesta.com/" target="_blank">Anakeesta</a>.</li>
-      <li>Horseback ride <a href="https://smokemontridingstables.com/" target="_blank">Smokemont Stables</a> ➜ Depart.</li>
-    </ol>
+  <h3>Age 14</h3>
+  <ol>
+    <li>Beginner hang-gliding lesson (<a href="https://www.kittyhawk.com/adventures/hang-gliding/" target="_blank">Kitty Hawk Kites</a>)</li>
+    <li>Deep-sea charter (<a href="https://www.oregon-inlet.com/" target="_blank">Oregon Inlet Fishing</a>)</li>
+    <li>Dune-buggy rental (<a href="https://www.obxbuggies.com/" target="_blank">OBX Buggies</a>) ➜ Sunset photography</li>
+    <li>Kitesurf clinic (<a href="https://outerbankskiteboarding.com/" target="_blank">OBX Kiteboarding</a>)</li>
+    <li>Shipwreck snorkel (<a href="https://obxdivers.com/" target="_blank">OBX Divers</a>) ➜ depart</li>
+  </ol>
+</section>
 
-    <h3>Age 14</h3>
-    <ol>
-      <li>Raft Upper Pigeon River with <a href="https://noc.com/trips/whitewater-rafting/fully-guided-pigeon-river/" target="_blank">Nantahala Outdoor Center</a>.</li>
-      <li>Sunrise hike Mount LeConte via Alum Cave.</li>
-      <li>Mountain bike <a href="https://visitcherokeenc.com/play/fire-mountain-trails/" target="_blank">Fire Mountain Trails</a>.</li>
-      <li><a href="https://www.gatlinburghaunts.com/" target="_blank">Gatlinburg Night Ghost Tour</a>.</li>
-      <li><a href="https://www.nps.gov/grsm/planyourvisit/grotto-falls.htm" target="_blank">Grotto Falls</a> canyoning shoot ➜ Depart.</li>
-    </ol>
-  </section>
+<!-- ===========  SMOKIES  =========== -->
+<section id="gsm" class="itin">
+  <h2>Great Smoky Mountains — 5-Day Itinerary</h2>
 
-  <script>
-    let slideIndex=1;const slides=document.getElementsByClassName('slide'),dots=document.getElementsByClassName('dot');
-    function showSlides(n){if(n>slides.length)slideIndex=1;if(n<1)slideIndex=slides.length;for(let i=0;i<slides.length;i++){slides[i].style.display='none'}for(let i=0;i<dots.length;i++){dots[i].classList.remove('active')}slides[slideIndex-1].style.display='block';dots[slideIndex-1].classList.add('active')}
-    function plusSlides(n){showSlides(slideIndex+=n)}function currentSlide(n){showSlides(slideIndex=n)}
-    showSlides(slideIndex);setInterval(()=>plusSlides(1),8000);
-  </script>
+  <h3>Age 7</h3>
+  <ol>
+    <li>Easy stroll to <a href="https://www.nps.gov/grsm/planyourvisit/laurel-falls.htm" target="_blank">Laurel Falls</a> ➜ Junior Ranger kit at Sugarlands</li>
+    <li>Scenic drive (<a href="https://www.nps.gov/grsm/planyourvisit/roaring-fork.htm" target="_blank">Roaring Fork Motor Trail</a>) ➜ Picnic at Chimneys</li>
+    <li><a href="https://www.ripleyaquariums.com/gatlinburg/" target="_blank">Ripley’s Aquarium of the Smokies</a></li>
+    <li><a href="https://www.dollywood.com/" target="_blank">Dollywood</a> kiddie rides &amp; Country Fair area</li>
+    <li>Ride the <a href="https://www.gatlinburgskypark.com/" target="_blank">Gatlinburg SkyLift</a> ➜ depart</li>
+  </ol>
+
+  <h3>Age 11</h3>
+  <ol>
+    <li>Bike the <a href="https://www.nps.gov/grsm/planyourvisit/cadescove.htm" target="_blank">Cades Cove</a> loop (car-free morning)</li>
+    <li>Moderate hike to <a href="https://www.nps.gov/grsm/planyourvisit/alum-cave.htm" target="_blank">Alum Cave Bluffs</a></li>
+    <li>Zipline canopy tour (<a href="https://www.climbworks.com/gatlinburg/" target="_blank">CLIMB Works</a>)</li>
+    <li>Tree-top skywalk at <a href="https://anakeesta.com/" target="_blank">Anakeesta</a></li>
+    <li>Horseback ride (<a href="https://smokemontridingstables.com/" target="_blank">Smokemont Stables</a>) ➜ depart</li>
+  </ol>
+
+  <h3>Age 14</h3>
+  <ol>
+    <li>White-water raft the Upper Pigeon (<a href="https://noc.com/trips/whitewater-rafting/fully-guided-pigeon-river/" target="_blank">NOC</a>)</li>
+    <li>Sunrise trek to Mount LeConte via Alum Cave</li>
+    <li>Mountain-bike the <a href="https://visitcherokeenc.com/play/fire-mountain-trails/" target="_blank">Fire Mountain Trails</a></li>
+    <li><a href="https://www.gatlinburghaunts.com/" target="_blank">Gatlinburg Night Ghost Tour</a></li>
+    <li>Canyoning photo session at <a href="https://www.nps.gov/grsm/planyourvisit/grotto-falls.htm" target="_blank">Grotto Falls</a> ➜ depart</li>
+  </ol>
+</section>
+
+<!-- ===========  POLL OVERLAY  =========== -->
+<div id="poll" class="poll">
+  <h2>Vote for Your Favorite Trip</h2>
+  <form id="voteForm">
+    <label><input type="radio" name="trip" value="Clearwater" required> Clearwater Beach, FL</label>
+    <label><input type="radio" name="trip" value="Outer Banks"> Outer Banks, NC</label>
+    <label><input type="radio" name="trip" value="Smokies"> Great Smoky Mountains, TN</label>
+    <button type="submit">Submit Vote</button>
+  </form>
+  <div id="results" style="display:none">
+    <h3>Current Results</h3>
+    <ul id="resultList"></ul>
+    <button onclick="closePoll()">Close</button>
+  </div>
+</div>
+
+<!-- ===========  SCRIPTS  =========== -->
+<script>
+/* --- slideshow --- */
+let slideIndex=1;
+const slides=document.getElementsByClassName('slide'),
+      dots=document.getElementsByClassName('dot');
+function showSlides(n){
+  if(n>slides.length)slideIndex=1;
+  if(n<1)slideIndex=slides.length;
+  for(let i=0;i<slides.length;i++){slides[i].style.display='none'}
+  for(let i=0;i<dots.length;i++){dots[i].classList.remove('active')}
+  slides[slideIndex-1].style.display='block';
+  dots[slideIndex-1].classList.add('active');
+}
+function plusSlides(n){showSlides(slideIndex+=n)}
+function currentSlide(n){showSlides(slideIndex=n)}
+showSlides(slideIndex);
+setInterval(()=>plusSlides(1),8000);
+
+/* --- poll --- */
+function openPoll(){document.getElementById('poll').classList.add('active')}
+function closePoll(){document.getElementById('poll').classList.remove('active')}
+const voteForm=document.getElementById('voteForm'),
+      resultList=document.getElementById('resultList'),
+      resultsDiv=document.getElementById('results');
+function getVotes(){
+  return JSON.parse(localStorage.getItem('tripVotes')||
+    '{"Clearwater":0,"Outer Banks":0,"Smokies":0}');
+}
+function saveVotes(v){localStorage.setItem('tripVotes',JSON.stringify(v))}
+function renderResults(){
+  const v=getVotes();
+  resultList.innerHTML='';
+  for(const t in v){
+    const li=document.createElement('li');
+    li.textContent=`${t}: ${v[t]} vote${v[t]!==1?'s':''}`;
+    resultList.appendChild(li);
+  }
+  resultsDiv.style.display='block';
+}
+voteForm.addEventListener('submit',e=>{
+  e.preventDefault();
+  const choice=voteForm.trip.value,
+        v=getVotes();
+  v[choice]++; saveVotes(v); renderResults();
+});
+</script>
 </body>
 </html>
