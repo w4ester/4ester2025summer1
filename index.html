@@ -215,6 +215,16 @@
     <h3>Current Results</h3>
     <ul id="resultList"></ul>
     <button onclick="closePoll()">Close</button>
+    <div style="margin-top:15px;padding:10px;background:#f0f0f0;border-radius:5px;color:#000">
+      <strong>Share to Combine Votes:</strong>
+      <input type="text" id="shareUrl" readonly style="width:90%;margin:5px 0;padding:5px">
+      <button onclick="copyShareUrl()">Copy Link</button>
+      <button onclick="document.getElementById('mergeUrl').style.display='block'">Merge Others</button>
+      <div id="mergeUrl" style="display:none;margin-top:10px">
+        <input type="text" id="otherUrl" placeholder="Paste another voter's link">
+        <button onclick="mergeVotes()">Add Their Votes</button>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -237,32 +247,135 @@ function currentSlide(n){showSlides(slideIndex=n)}
 showSlides(slideIndex);
 setInterval(()=>plusSlides(1),8000);
 
-/* --- poll --- */
-function openPoll(){document.getElementById('poll').classList.add('active')}
+/* --- poll with URL-based voting --- */
+function openPoll(){
+  document.getElementById('poll').classList.add('active');
+  loadVotesFromURL();
+}
 function closePoll(){document.getElementById('poll').classList.remove('active')}
+
 const voteForm=document.getElementById('voteForm'),
       resultList=document.getElementById('resultList'),
       resultsDiv=document.getElementById('results');
+
+// URL-based voting functions
+function encodeVotes(votes){
+  const str=JSON.stringify(votes);
+  return btoa(str).replace(/=/g,'');
+}
+
+function decodeVotes(encoded){
+  try{
+    const padded=encoded+(encoded.length%4?'='.repeat(4-encoded.length%4):'');
+    return JSON.parse(atob(padded));
+  }catch(e){
+    return {"Clearwater":0,"Outer Banks":0,"Smokies":0};
+  }
+}
+
+function loadVotesFromURL(){
+  const hash=window.location.hash.slice(1);
+  const params=new URLSearchParams(hash);
+  const voteData=params.get('v');
+  
+  if(voteData){
+    const votes=decodeVotes(voteData);
+    saveVotes(votes);
+  }
+}
+
+function updateShareURL(){
+  const votes=getVotes();
+  const encoded=encodeVotes(votes);
+  const shareUrl=`${window.location.origin}${window.location.pathname}#v=${encoded}`;
+  document.getElementById('shareUrl').value=shareUrl;
+  window.location.hash=`v=${encoded}`;
+}
+
 function getVotes(){
+  // First check URL, then localStorage
+  const hash=window.location.hash.slice(1);
+  const params=new URLSearchParams(hash);
+  const voteData=params.get('v');
+  
+  if(voteData){
+    return decodeVotes(voteData);
+  }
+  
   return JSON.parse(localStorage.getItem('tripVotes')||
     '{"Clearwater":0,"Outer Banks":0,"Smokies":0}');
 }
-function saveVotes(v){localStorage.setItem('tripVotes',JSON.stringify(v))}
+
+function saveVotes(v){
+  localStorage.setItem('tripVotes',JSON.stringify(v));
+  updateShareURL();
+}
+
 function renderResults(){
   const v=getVotes();
   resultList.innerHTML='';
+  let total=0;
   for(const t in v){
+    total+=v[t];
     const li=document.createElement('li');
     li.textContent=`${t}: ${v[t]} vote${v[t]!==1?'s':''}`;
     resultList.appendChild(li);
   }
   resultsDiv.style.display='block';
+  updateShareURL();
 }
+
 voteForm.addEventListener('submit',e=>{
   e.preventDefault();
   const choice=voteForm.trip.value,
         v=getVotes();
-  v[choice]++; saveVotes(v); renderResults();
+  v[choice]++; 
+  saveVotes(v); 
+  renderResults();
+});
+
+// Merge votes from another URL
+function mergeVotes(){
+  const otherUrl=document.getElementById('otherUrl').value;
+  try{
+    const url=new URL(otherUrl);
+    const hash=url.hash.slice(1);
+    const params=new URLSearchParams(hash);
+    const voteData=params.get('v');
+    
+    if(voteData){
+      const otherVotes=decodeVotes(voteData);
+      const currentVotes=getVotes();
+      
+      // Merge votes
+      for(const trip in otherVotes){
+        currentVotes[trip]=(currentVotes[trip]||0)+otherVotes[trip];
+      }
+      
+      saveVotes(currentVotes);
+      renderResults();
+      alert('Votes merged successfully!');
+      document.getElementById('otherUrl').value='';
+    }else{
+      alert('No vote data found in that link');
+    }
+  }catch(e){
+    alert('Invalid link format');
+  }
+}
+
+function copyShareUrl(){
+  const input=document.getElementById('shareUrl');
+  input.select();
+  document.execCommand('copy');
+  alert('Link copied! Share it to combine votes');
+}
+
+// Load votes if opening with a URL hash
+window.addEventListener('load',()=>{
+  if(window.location.hash){
+    loadVotesFromURL();
+  }
 });
 </script>
 </body>
