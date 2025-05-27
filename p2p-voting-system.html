@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>P2P Voting System - No Servers Needed</title>
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
+    .status { padding: 10px; margin: 10px 0; border-radius: 5px; }
+    .connected { background: #d4edda; }
+    .disconnected { background: #f8d7da; }
+    .vote-results { margin: 20px 0; }
+    button { padding: 10px 20px; margin: 5px; cursor: pointer; }
+    #peerId { font-family: monospace; background: #f0f0f0; padding: 5px; }
+  </style>
+</head>
+<body>
+  <h1>Clever P2P Voting System</h1>
+  
+  <div class="status disconnected" id="status">
+    Generating your peer ID...
+  </div>
+  
+  <div>
+    Your Peer ID: <span id="peerId">generating...</span>
+    <button onclick="copyPeerId()">Copy</button>
+  </div>
+  
+  <div>
+    Connect to peer: 
+    <input type="text" id="remotePeerId" placeholder="Enter peer ID">
+    <button onclick="connectToPeer()">Connect</button>
+  </div>
+  
+  <div>
+    <h3>Vote for Destination:</h3>
+    <button onclick="vote('Clearwater')">Clearwater</button>
+    <button onclick="vote('Outer Banks')">Outer Banks</button>
+    <button onclick="vote('Smokies')">Smokies</button>
+  </div>
+  
+  <div class="vote-results">
+    <h3>Current Results:</h3>
+    <div id="results"></div>
+  </div>
+  
+  <div>
+    <h3>Connected Peers:</h3>
+    <ul id="peersList"></ul>
+  </div>
+
+  <script>
+    // Clever P2P Voting using WebRTC Data Channels
+    class P2PVotingSystem {
+      constructor() {
+        this.votes = { 'Clearwater': 0, 'Outer Banks': 0, 'Smokies': 0 };
+        this.peers = new Map();
+        this.voteHistory = new Set();
+        this.myId = this.generateId();
+        
+        // Use public STUN servers
+        this.config = {
+          iceServers: [
+            { urls: 'stun:stun.l.google.com:19302' },
+            { urls: 'stun:stun1.l.google.com:19302' }
+          ]
+        };
+        
+        this.initialize();
+      }
+      
+      generateId() {
+        return Math.random().toString(36).substr(2, 9);
+      }
+      
+      initialize() {
+        // Display our peer ID
+        document.getElementById('peerId').textContent = this.myId;
+        document.getElementById('status').textContent = `Ready! Share your ID: ${this.myId}`;
+        document.getElementById('status').className = 'status connected';
+        
+        // Load saved votes
+        this.loadVotes();
+        this.updateDisplay();
+        
+        // Set up signaling through URL parameters
+        this.setupURLSignaling();
+      }
+      
+      setupURLSignaling() {
+        // Check if we have an offer in the URL
+        const params = new URLSearchParams(window.location.search);
+        const offer = params.get('offer');
+        if (offer) {
+          this.handleIncomingOffer(decodeURIComponent(offer));
+        }
+      }
+      
+      async createConnection(remoteId) {
+        const pc = new RTCPeerConnection(this.config);
+        const dc = pc.createDataChannel('votes');
+        
+        dc.onopen = () => {
+          console.log('Data channel open with', remoteId);
+          this.syncVotes(dc);
+        };
+        
+        dc.onmessage = (e) => {
+          this.handleMessage(JSON.parse(e.data), dc);
+        };
+        
+        pc.onicecandidate = (e) => {
+          if (e.candidate) {
+            console.log('ICE candidate:', e.candidate);
+          }
+        };
+        
+        const offer = await pc.createOffer();
+        await pc.setLocalDescription(offer);
+        
+        // Instead of WebSocket, we'll use a clever URL approach
+        const offerUrl = `${window.location.origin}${window.location.pathname}?offer=${encodeURIComponent(JSON.stringify(offer))}`;
+        
+        console.log('Share this URL with peer:', offerUrl);
+        alert('Connection URL copied to clipboard!');
+        navigator.clipboard.writeText(offerUrl);
+        
+        this.peers.set(remoteId, { pc, dc });
+        return pc;
+      }
+      
+      async handleIncomingOffer(offerString) {
+        try {
+          const offer = JSON.parse(offerString);
+          const pc = new RTCPeerConnection(this.config);
+          
+          pc.ondatachannel = (e) => {
+            const dc = e.channel;
+            dc.onopen = () => {
+              console.log('Received data channel');
+              this.syncVotes(dc);
+            };
+            
+            dc.onmessage = (e) => {
+              this.handleMessage(JSON.parse(e.data), dc);
+            };
+          };
+          
+          await pc.setRemoteDescription(offer);
+          const answer = await pc.createAnswer();
+          await pc.setLocalDescription(answer);
+          
+          // Show answer for manual exchange
+          const answerText = JSON.stringify(answer);
+          console.log('Send this answer back:', answerText);
+          alert('Answer copied to clipboard! Send it back to the peer.');
+          navigator.clipboard.writeText(answerText);
+          
+        } catch (error) {
+          console.error('Error handling offer:', error);
+        }
+      }
+      
+      handleMessage(msg, channel) {
+        switch (msg.type) {
+          case 'sync':
+            this.mergeVotes(msg.votes, msg.history);
+            this.updateDisplay();
+            break;
+          case 'vote':
+            this.recordVote(msg.voteId, msg.trip);
+            this.updateDisplay();
+            this.broadcastVote(msg, channel);
+            break;
+        }
+      }
+      
+      syncVotes(channel) {
+        channel.send(JSON.stringify({
+          type: 'sync',
+          votes: this.votes,
+          history: Array.from(this.voteHistory)
+        }));
+      }
+      
+      mergeVotes(remoteVotes, remoteHistory) {
+        // Merge vote history to prevent duplicates
+        remoteHistory.forEach(voteId => {
+          if (!this.voteHistory.has(voteId)) {
+            this.voteHistory.add(voteId);
+          }
+        });
+        
+        // Recalculate votes based on merged history
+        this.recalculateVotes();
+      }
+      
+      vote(trip) {
+        const voteId = `${this.myId}-${Date.now()}`;
+        this.recordVote(voteId, trip);
+        
+        // Broadcast to all connected peers
+        const voteMsg = { type: 'vote', voteId, trip };
+        this.peers.forEach(({ dc }) => {
+          if (dc.readyState === 'open') {
+            dc.send(JSON.stringify(voteMsg));
+          }
+        });
+        
+        this.saveVotes();
+        this.updateDisplay();
+      }
+      
+      recordVote(voteId, trip) {
+        if (!this.voteHistory.has(voteId)) {
+          this.voteHistory.add(voteId);
+          this.votes[trip]++;
+        }
+      }
+      
+      recalculateVotes() {
+        this.votes = { 'Clearwater': 0, 'Outer Banks': 0, 'Smokies': 0 };
+        this.voteHistory.forEach(voteId => {
+          const trip = voteId.split('-')[2]; // Extract trip from voteId
+          if (this.votes[trip] !== undefined) {
+            this.votes[trip]++;
+          }
+        });
+      }
+      
+      broadcastVote(msg, excludeChannel) {
+        this.peers.forEach(({ dc }) => {
+          if (dc !== excludeChannel && dc.readyState === 'open') {
+            dc.send(JSON.stringify(msg));
+          }
+        });
+      }
+      
+      updateDisplay() {
+        const results = document.getElementById('results');
+        results.innerHTML = Object.entries(this.votes)
+          .map(([trip, count]) => `<div>${trip}: ${count} votes</div>`)
+          .join('');
+          
+        const peersList = document.getElementById('peersList');
+        peersList.innerHTML = Array.from(this.peers.keys())
+          .map(id => `<li>Peer: ${id}</li>`)
+          .join('');
+      }
+      
+      saveVotes() {
+        localStorage.setItem('p2pVotes', JSON.stringify({
+          votes: this.votes,
+          history: Array.from(this.voteHistory)
+        }));
+      }
+      
+      loadVotes() {
+        const saved = localStorage.getItem('p2pVotes');
+        if (saved) {
+          const data = JSON.parse(saved);
+          this.votes = data.votes;
+          this.voteHistory = new Set(data.history);
+        }
+      }
+    }
+    
+    // Initialize the system
+    const votingSystem = new P2PVotingSystem();
+    
+    // UI Functions
+    function vote(trip) {
+      votingSystem.vote(trip);
+    }
+    
+    function connectToPeer() {
+      const peerId = document.getElementById('remotePeerId').value;
+      if (peerId) {
+        votingSystem.createConnection(peerId);
+      }
+    }
+    
+    function copyPeerId() {
+      navigator.clipboard.writeText(votingSystem.myId);
+      alert('Peer ID copied to clipboard!');
+    }
+  </script>
+</body>
+</html>

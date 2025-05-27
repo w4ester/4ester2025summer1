@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>URL Hash Voting - Zero Infrastructure</title>
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
+    .vote-btn { padding: 15px 30px; margin: 10px; font-size: 18px; cursor: pointer; }
+    .results { margin: 30px 0; padding: 20px; background: #f0f0f0; border-radius: 10px; }
+    .share-url { word-break: break-all; background: #e0e0e0; padding: 10px; border-radius: 5px; }
+    .instruction { background: #e8f5e9; padding: 15px; border-radius: 5px; margin: 20px 0; }
+  </style>
+</head>
+<body>
+  <h1>🎯 Clever URL-Based Voting System</h1>
+  
+  <div class="instruction">
+    <h3>How it works:</h3>
+    <p>1. Click to vote - your vote is encoded in the URL</p>
+    <p>2. Share your URL with others to merge votes</p>
+    <p>3. Anyone can combine URLs to see total results</p>
+    <p>4. No servers, no databases, just clever URL encoding!</p>
+  </div>
+  
+  <div>
+    <h2>Cast Your Vote:</h2>
+    <button class="vote-btn" onclick="castVote('CW')">🏖️ Clearwater</button>
+    <button class="vote-btn" onclick="castVote('OB')">🏰 Outer Banks</button>
+    <button class="vote-btn" onclick="castVote('SM')">🏔️ Smokies</button>
+  </div>
+  
+  <div class="results">
+    <h2>Current Results:</h2>
+    <div id="voteCount"></div>
+    <div style="margin-top: 20px;">
+      <strong>Your voting URL (share this):</strong>
+      <div class="share-url" id="shareUrl"></div>
+      <button onclick="copyUrl()">Copy URL</button>
+    </div>
+  </div>
+  
+  <div>
+    <h3>Merge Other Votes:</h3>
+    <input type="text" id="mergeUrl" placeholder="Paste another voter's URL here" style="width: 300px;">
+    <button onclick="mergeVotes()">Merge Votes</button>
+  </div>
+
+  <script>
+    // Clever URL-based voting system
+    class URLVoting {
+      constructor() {
+        this.destinations = {
+          'CW': 'Clearwater',
+          'OB': 'Outer Banks', 
+          'SM': 'Smokies'
+        };
+        this.loadFromURL();
+      }
+      
+      // Encode votes into base64 URL parameter
+      encodeVotes(votes) {
+        // Create a compact representation: CW:3,OB:2,SM:5
+        const voteString = Object.entries(votes)
+          .map(([key, count]) => `${key}:${count}`)
+          .join(',');
+        
+        // Encode to base64 for URL safety
+        return btoa(voteString);
+      }
+      
+      // Decode votes from base64 URL parameter
+      decodeVotes(encoded) {
+        try {
+          const decoded = atob(encoded);
+          const votes = {};
+          
+          decoded.split(',').forEach(pair => {
+            const [key, count] = pair.split(':');
+            votes[key] = parseInt(count) || 0;
+          });
+          
+          return votes;
+        } catch (e) {
+          return { CW: 0, OB: 0, SM: 0 };
+        }
+      }
+      
+      // Load votes from current URL
+      loadFromURL() {
+        const hash = window.location.hash.slice(1);
+        const params = new URLSearchParams(hash);
+        const voteData = params.get('v');
+        
+        if (voteData) {
+          this.votes = this.decodeVotes(voteData);
+        } else {
+          this.votes = { CW: 0, OB: 0, SM: 0 };
+        }
+        
+        this.updateDisplay();
+      }
+      
+      // Cast a vote and update URL
+      castVote(destination) {
+        this.votes[destination] = (this.votes[destination] || 0) + 1;
+        this.updateURL();
+        this.updateDisplay();
+      }
+      
+      // Update the URL with current votes
+      updateURL() {
+        const encoded = this.encodeVotes(this.votes);
+        const newHash = `#v=${encoded}`;
+        
+        // Use replaceState to avoid adding to history
+        history.replaceState(null, null, newHash);
+        
+        // Update share URL display
+        const fullUrl = window.location.origin + window.location.pathname + newHash;
+        document.getElementById('shareUrl').textContent = fullUrl;
+      }
+      
+      // Display current vote counts
+      updateDisplay() {
+        const voteCount = document.getElementById('voteCount');
+        let html = '';
+        let total = 0;
+        
+        for (const [key, name] of Object.entries(this.destinations)) {
+          const count = this.votes[key] || 0;
+          total += count;
+          const percentage = total > 0 ? ((count / total) * 100).toFixed(1) : 0;
+          
+          html += `
+            <div style="margin: 10px 0;">
+              <strong>${name}:</strong> ${count} votes (${percentage}%)
+              <div style="background: #ddd; height: 20px; border-radius: 10px; margin-top: 5px;">
+                <div style="background: #4fc3f7; height: 100%; width: ${percentage}%; border-radius: 10px;"></div>
+              </div>
+            </div>
+          `;
+        }
+        
+        html += `<div style="margin-top: 20px;"><strong>Total Votes:</strong> ${total}</div>`;
+        voteCount.innerHTML = html;
+        
+        // Update share URL
+        this.updateURL();
+      }
+      
+      // Merge votes from another URL
+      mergeVotesFromURL(url) {
+        try {
+          const urlObj = new URL(url);
+          const hash = urlObj.hash.slice(1);
+          const params = new URLSearchParams(hash);
+          const voteData = params.get('v');
+          
+          if (voteData) {
+            const otherVotes = this.decodeVotes(voteData);
+            
+            // Merge votes
+            for (const [key, count] of Object.entries(otherVotes)) {
+              this.votes[key] = (this.votes[key] || 0) + count;
+            }
+            
+            this.updateURL();
+            this.updateDisplay();
+            
+            alert('Votes merged successfully!');
+          } else {
+            alert('No vote data found in the URL');
+          }
+        } catch (e) {
+          alert('Invalid URL');
+        }
+      }
+    }
+    
+    // Initialize the voting system
+    const voting = new URLVoting();
+    
+    // UI Functions
+    function castVote(destination) {
+      voting.castVote(destination);
+    }
+    
+    function copyUrl() {
+      const url = document.getElementById('shareUrl').textContent;
+      navigator.clipboard.writeText(url);
+      alert('URL copied to clipboard!');
+    }
+    
+    function mergeVotes() {
+      const url = document.getElementById('mergeUrl').value;
+      if (url) {
+        voting.mergeVotesFromURL(url);
+        document.getElementById('mergeUrl').value = '';
+      }
+    }
+    
+    // Listen for URL changes (back/forward navigation)
+    window.addEventListener('hashchange', () => {
+      voting.loadFromURL();
+    });
+  </script>
+</body>
+</html>
